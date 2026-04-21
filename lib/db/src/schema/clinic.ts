@@ -78,6 +78,7 @@ export const appointmentsTable = pgTable(
       .notNull()
       .references(() => doctorsTable.id, { onDelete: "cascade" }),
     appointmentDate: date("appointment_date").notNull(),
+    appointmentTime: text("appointment_time"),
     reminderSent: boolean("reminder_sent").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -121,10 +122,12 @@ export const medicineRemindersTable = pgTable(
     doctorId: text("doctor_id")
       .notNull()
       .references(() => doctorsTable.id, { onDelete: "cascade" }),
+    medicineName: text("medicine_name").notNull().default(""),
     startDate: date("start_date").notNull(),
     endDate: date("end_date").notNull(),
     durationDays: integer("duration_days").notNull(),
     isActive: boolean("is_active").notNull().default(true),
+    lastReminderSentDate: date("last_reminder_sent_date"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

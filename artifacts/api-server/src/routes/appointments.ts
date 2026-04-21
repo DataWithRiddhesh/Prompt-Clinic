@@ -17,6 +17,16 @@ async function ensureOwn(doctorId: string, patientId: string): Promise<boolean> 
   return rows.length > 0;
 }
 
+function serialize(r: typeof appointmentsTable.$inferSelect) {
+  return {
+    id: r.id,
+    patientId: r.patientId,
+    appointmentDate: r.appointmentDate,
+    appointmentTime: r.appointmentTime,
+    createdAt: r.createdAt.toISOString(),
+  };
+}
+
 router.get("/patients/:patientId/appointments", requireDoctor, async (req, res) => {
   const { doctorId } = req as AuthedRequest;
   const { patientId } = req.params;
@@ -29,14 +39,7 @@ router.get("/patients/:patientId/appointments", requireDoctor, async (req, res) 
     .from(appointmentsTable)
     .where(eq(appointmentsTable.patientId, patientId))
     .orderBy(desc(appointmentsTable.appointmentDate));
-  res.json(
-    rows.map((r) => ({
-      id: r.id,
-      patientId: r.patientId,
-      appointmentDate: r.appointmentDate,
-      createdAt: r.createdAt.toISOString(),
-    })),
-  );
+  res.json(rows.map(serialize));
 });
 
 router.post("/patients/:patientId/appointments", requireDoctor, async (req, res) => {
@@ -59,15 +62,10 @@ router.post("/patients/:patientId/appointments", requireDoctor, async (req, res)
       patientId,
       doctorId,
       appointmentDate: parsed.data.appointmentDate,
+      appointmentTime: parsed.data.appointmentTime ?? null,
     })
     .returning();
-  const r = inserted[0]!;
-  res.json({
-    id: r.id,
-    patientId: r.patientId,
-    appointmentDate: r.appointmentDate,
-    createdAt: r.createdAt.toISOString(),
-  });
+  res.json(serialize(inserted[0]!));
 });
 
 router.delete("/appointments/:appointmentId", requireDoctor, async (req, res) => {

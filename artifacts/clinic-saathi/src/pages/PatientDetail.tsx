@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useRoute } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -63,9 +63,24 @@ export default function PatientDetail() {
   // Reminder state
   const [duration, setDuration] = useState(7);
   const [reminderEnabled, setReminderEnabled] = useState(true);
+  const [medicineName, setMedicineName] = useState("");
+  const [aptTime, setAptTime] = useState("");
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const activeReminder = detail?.activeReminder;
+  useEffect(() => {
+    if (activeReminder?.medicineName && !medicineName) {
+      setMedicineName(activeReminder.medicineName);
+      setDuration(activeReminder.durationDays);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeReminder?.id]);
+  useEffect(() => {
+    if (detail?.nextAppointment?.appointmentTime && !aptTime) {
+      setAptTime(detail.nextAppointment.appointmentTime);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detail?.nextAppointment?.id]);
   const reminderStart = useMemo(() => isoDate(new Date()), []);
   const reminderEnd = useMemo(() => {
     const d = new Date();
@@ -85,7 +100,7 @@ export default function PatientDetail() {
     if (d < today) return;
     const dateStr = isoDate(d);
     createApt.mutate(
-      { patientId, data: { appointmentDate: dateStr } },
+      { patientId, data: { appointmentDate: dateStr, appointmentTime: aptTime || null } },
       {
         onSuccess: () => {
           invalidatePatient();
@@ -113,8 +128,23 @@ export default function PatientDetail() {
   }
 
   function saveReminder() {
+    if (!medicineName.trim()) {
+      toast({
+        title: "Medicine name needed",
+        description: "Tell the patient what to take.",
+        variant: "destructive",
+      });
+      return;
+    }
     createReminder.mutate(
-      { patientId, data: { durationDays: duration, isActive: reminderEnabled } },
+      {
+        patientId,
+        data: {
+          medicineName: medicineName.trim(),
+          durationDays: duration,
+          isActive: reminderEnabled,
+        },
+      },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListPatientRemindersQueryKey(patientId) });
@@ -206,7 +236,7 @@ export default function PatientDetail() {
             </div>
             <div>
               <h2 className="font-semibold">Next appointment</h2>
-              <p className="text-xs text-muted-foreground">Tap a date to schedule.</p>
+              <p className="text-xs text-muted-foreground">Pick a time, then tap a date.</p>
             </div>
           </div>
           {detail.nextAppointment && (
@@ -225,8 +255,23 @@ export default function PatientDetail() {
           <div className="px-5 py-3 bg-chart-3/10 border-b border-border text-sm font-semibold text-chart-3 flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4" />
             Currently scheduled for {fmtDate(detail.nextAppointment.appointmentDate)}
+            {detail.nextAppointment.appointmentTime
+              ? ` at ${detail.nextAppointment.appointmentTime}`
+              : ""}
           </div>
         )}
+
+        <div className="px-4 pt-4">
+          <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+            Time (optional, included in WhatsApp reminder)
+          </label>
+          <input
+            type="time"
+            value={aptTime}
+            onChange={(e) => setAptTime(e.target.value)}
+            className="w-full sm:w-44 h-11 rounded-lg border border-input bg-background px-3 text-base outline-none focus:ring-2 focus:ring-ring focus:border-ring tabular-nums"
+          />
+        </div>
 
         <div className="p-4">
           {/* Calendar */}
@@ -405,14 +450,28 @@ export default function PatientDetail() {
           {activeReminder && (
             <div className="rounded-xl bg-chart-3/10 border border-chart-3/30 px-4 py-3 text-sm">
               <div className="flex items-center gap-2 font-semibold text-chart-3">
-                <Clock className="h-4 w-4" />
-                Course runs from {fmtDate(activeReminder.startDate)} to {fmtDate(activeReminder.endDate)}
+                <Pill className="h-4 w-4" />
+                {activeReminder.medicineName || "Medicine course"}
+              </div>
+              <div className="flex items-center gap-2 text-chart-3 text-xs mt-1">
+                <Clock className="h-3 w-3" />
+                {fmtDate(activeReminder.startDate)} → {fmtDate(activeReminder.endDate)}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                {activeReminder.durationDays} day{activeReminder.durationDays === 1 ? "" : "s"} total
+                {activeReminder.durationDays} day{activeReminder.durationDays === 1 ? "" : "s"} total · daily WhatsApp at 9 AM
               </div>
             </div>
           )}
+
+          <div>
+            <label className="block text-sm font-semibold mb-1.5">Medicine name</label>
+            <input
+              value={medicineName}
+              onChange={(e) => setMedicineName(e.target.value)}
+              placeholder="e.g. Azithromycin 500mg, after food"
+              className="w-full h-12 rounded-lg border border-input bg-background px-3.5 text-base outline-none focus:ring-2 focus:ring-ring focus:border-ring"
+            />
+          </div>
 
           <div>
             <label className="block text-sm font-semibold mb-1.5">Course duration (days)</label>

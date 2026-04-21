@@ -17,6 +17,19 @@ async function ensureOwn(doctorId: string, patientId: string): Promise<boolean> 
   return rows.length > 0;
 }
 
+function serialize(r: typeof medicineRemindersTable.$inferSelect) {
+  return {
+    id: r.id,
+    patientId: r.patientId,
+    medicineName: r.medicineName,
+    startDate: r.startDate,
+    endDate: r.endDate,
+    durationDays: r.durationDays,
+    isActive: r.isActive,
+    createdAt: r.createdAt.toISOString(),
+  };
+}
+
 router.get("/patients/:patientId/reminders", requireDoctor, async (req, res) => {
   const { doctorId } = req as AuthedRequest;
   const { patientId } = req.params;
@@ -29,17 +42,7 @@ router.get("/patients/:patientId/reminders", requireDoctor, async (req, res) => 
     .from(medicineRemindersTable)
     .where(eq(medicineRemindersTable.patientId, patientId))
     .orderBy(desc(medicineRemindersTable.createdAt));
-  res.json(
-    rows.map((r) => ({
-      id: r.id,
-      patientId: r.patientId,
-      startDate: r.startDate,
-      endDate: r.endDate,
-      durationDays: r.durationDays,
-      isActive: r.isActive,
-      createdAt: r.createdAt.toISOString(),
-    })),
-  );
+  res.json(rows.map(serialize));
 });
 
 router.post("/patients/:patientId/reminders", requireDoctor, async (req, res) => {
@@ -55,7 +58,6 @@ router.post("/patients/:patientId/reminders", requireDoctor, async (req, res) =>
     return;
   }
 
-  // Deactivate any existing active reminders for this patient
   await db
     .update(medicineRemindersTable)
     .set({ isActive: false })
@@ -79,22 +81,14 @@ router.post("/patients/:patientId/reminders", requireDoctor, async (req, res) =>
       id,
       patientId,
       doctorId,
+      medicineName: parsed.data.medicineName.trim(),
       startDate: startIso,
       endDate: endIso,
       durationDays: parsed.data.durationDays,
       isActive: parsed.data.isActive,
     })
     .returning();
-  const r = inserted[0]!;
-  res.json({
-    id: r.id,
-    patientId: r.patientId,
-    startDate: r.startDate,
-    endDate: r.endDate,
-    durationDays: r.durationDays,
-    isActive: r.isActive,
-    createdAt: r.createdAt.toISOString(),
-  });
+  res.json(serialize(inserted[0]!));
 });
 
 export default router;

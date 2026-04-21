@@ -86,12 +86,15 @@ export interface Appointment {
   patientId: string;
   /** ISO date (YYYY-MM-DD) */
   appointmentDate: string;
+  /** Optional 24h time (HH:MM) */
+  appointmentTime?: string | null;
   createdAt: string;
 }
 
 export interface MedicineReminder {
   id: string;
   patientId: string;
+  medicineName: string;
   /** ISO date (YYYY-MM-DD) */
   startDate: string;
   /** ISO date (YYYY-MM-DD) */
@@ -112,6 +115,8 @@ export interface PatientDetail {
 export interface NewAppointment {
   /** ISO date (YYYY-MM-DD) */
   appointmentDate: string;
+  /** Optional 24h time (HH:MM) */
+  appointmentTime?: string | null;
 }
 
 export interface Prescription {
@@ -126,6 +131,8 @@ export interface NewPrescription {
 }
 
 export interface NewReminder {
+  /** @minLength 1 */
+  medicineName: string;
   /**
    * @minimum 1
    * @maximum 365

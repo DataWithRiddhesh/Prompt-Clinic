@@ -9,4 +9,6 @@
 export interface NewAppointment {
   /** ISO date (YYYY-MM-DD) */
   appointmentDate: string;
+  /** Optional 24h time (HH:MM) */
+  appointmentTime?: string | null;
 }

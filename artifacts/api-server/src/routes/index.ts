@@ -7,6 +7,7 @@ import appointmentsRouter from "./appointments";
 import prescriptionsRouter from "./prescriptions";
 import remindersRouter from "./reminders";
 import dashboardRouter from "./dashboard";
+import debugRouter from "./debug";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(patientsRouter);
 router.use(appointmentsRouter);
 router.use(prescriptionsRouter);
 router.use(remindersRouter);
+router.use(debugRouter);
 
 export default router;

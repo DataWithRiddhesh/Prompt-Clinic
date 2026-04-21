@@ -500,6 +500,10 @@ components:
         appointmentDate:
           type: string
           description: ISO date (YYYY-MM-DD)
+        appointmentTime:
+          type: string
+          nullable: true
+          description: Optional 24h time (HH:MM)
         createdAt:
           type: string
           format: date-time
@@ -510,6 +514,10 @@ components:
         appointmentDate:
           type: string
           description: ISO date (YYYY-MM-DD)
+        appointmentTime:
+          type: string
+          nullable: true
+          description: Optional 24h time (HH:MM)
     Prescription:
       type: object
       required: [id, patientId, photoUrl, createdAt]
@@ -531,11 +539,13 @@ components:
           type: string
     MedicineReminder:
       type: object
-      required: [id, patientId, startDate, endDate, durationDays, isActive, createdAt]
+      required: [id, patientId, medicineName, startDate, endDate, durationDays, isActive, createdAt]
       properties:
         id:
           type: string
         patientId:
+          type: string
+        medicineName:
           type: string
         startDate:
           type: string
@@ -552,8 +562,11 @@ components:
           format: date-time
     NewReminder:
       type: object
-      required: [durationDays, isActive]
+      required: [medicineName, durationDays, isActive]
       properties:
+        medicineName:
+          type: string
+          minLength: 1
         durationDays:
           type: integer
           minimum: 1
