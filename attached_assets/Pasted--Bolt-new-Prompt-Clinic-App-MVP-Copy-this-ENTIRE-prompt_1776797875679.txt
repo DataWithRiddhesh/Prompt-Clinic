@@ -1,0 +1,159 @@
+# Bolt.new Prompt — Clinic App MVP
+## Copy this ENTIRE prompt and paste into Bolt.new
+
+---
+
+Build a simple clinic management web app for Indian doctors called "ClinicSaathi".
+
+## Tech Stack
+- React + Tailwind CSS for frontend
+- Supabase for database and auth
+- Mobile friendly (doctors use phones)
+- Clean simple UI — doctor must understand without training
+
+---
+
+## Pages Required
+
+### 1. Login Page
+- Simple email + password login
+- "Dr." prefix shown after login
+- Remember me checkbox
+
+---
+
+### 2. Dashboard Page (Home)
+After login doctor sees:
+
+TOP ROW — 4 stat cards:
+- Today's patients (number)
+- Appointments today (number)
+- Active medicine reminders (number)
+- Patients added this month (number)
+
+MIDDLE — Today's patient list:
+- Show all patients visited today
+- Each row: patient name, time, appointment date, medicine reminder status
+- Green dot = active reminder, Grey dot = no reminder
+- Click any patient row = open patient detail page
+
+BOTTOM — Quick add button:
+- Big green button "Add New Patient"
+
+---
+
+### 3. Add Patient Page
+Simple form with these fields:
+- Patient name (text)
+- Phone number (Indian format — 10 digits)
+- Age (number)
+- Gender (Male / Female / Other — dropdown)
+- Visit date (auto fills today)
+
+After saving — go directly to Patient Detail Page
+
+---
+
+### 4. Patient Detail Page
+This is the MAIN page. Show 4 sections:
+
+SECTION A — Patient Info Card at top:
+- Name, age, gender, phone
+- Total visits count
+- Last visit date
+
+SECTION B — Appointment Scheduler:
+- Title: "Next Appointment"
+- Show a simple calendar
+- Doctor clicks any future date = appointment saved
+- Below calendar show: "Reminder will be sent to patient on this date automatically"
+- Show currently scheduled appointment date in green if exists
+- Button: "Cancel Appointment" if appointment exists
+
+SECTION C — Prescription Photo Upload:
+- Title: "Prescription History"
+- Big upload button "Take Photo / Upload Prescription"
+- Accept image files (jpg, png)
+- After upload — show thumbnail gallery of all past prescriptions
+- Each photo shows date it was uploaded
+- Click photo = opens full size
+- Store photos in Supabase storage
+
+SECTION D — Medicine Reminder:
+- Title: "Medicine Reminder"
+- Input: "Course duration (days)" — number input default 7
+- Toggle switch: "Send daily WhatsApp reminder"
+- When toggle ON — show: "Patient will receive daily reminder for X days"
+- Show reminder start date and end date
+- Button: "Save Reminder"
+- Show status: Active (green) / Completed (grey) / Not set (grey)
+
+---
+
+### 5. Search Page
+- Big search bar at top
+- Doctor types patient name or phone number
+- Shows matching patients instantly as doctor types
+- Each result shows: name, phone, last visit date
+- Click result = open Patient Detail Page
+
+---
+
+### 6. Simple Settings Page
+- Doctor name
+- Clinic name  
+- Phone number
+- Clinic address
+- Save button
+
+---
+
+## Database Tables Needed (Supabase)
+
+doctors table:
+- id, email, name, clinic_name, phone, address, created_at
+
+patients table:
+- id, doctor_id, name, phone, age, gender, created_at
+
+visits table:
+- id, patient_id, doctor_id, visit_date, notes, created_at
+
+appointments table:
+- id, patient_id, doctor_id, appointment_date, reminder_sent, created_at
+
+prescriptions table:
+- id, patient_id, doctor_id, photo_url, created_at
+
+medicine_reminders table:
+- id, patient_id, doctor_id, start_date, end_date, duration_days, is_active, created_at
+
+---
+
+## Design Requirements
+- Primary color: #0EA5E9 (blue)
+- Clean white background
+- Large touch targets (minimum 44px) — doctor uses with gloves sometimes
+- Hindi friendly — use simple English words
+- Bottom navigation bar on mobile: Home, Search, Add Patient, Settings
+- No complex animations
+- Show loading spinner when saving data
+- Show success toast message after every save
+- Show error message if something fails
+
+---
+
+## Important Notes
+- WhatsApp integration is NOT needed in MVP — just save reminder data to database
+- No payment integration in MVP
+- No AI features in MVP — keep it simple first
+- Focus on making it FAST and SIMPLE
+- Every action should take maximum 3 taps
+
+---
+
+## After Building
+Show me:
+1. The working app
+2. The Supabase table structure
+3. How to deploy to Vercel

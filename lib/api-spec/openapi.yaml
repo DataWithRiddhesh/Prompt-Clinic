@@ -3,20 +3,33 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: ClinicSaathi API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: doctor
+    description: Doctor profile and dashboard
+  - name: patients
+    description: Patient management
+  - name: visits
+    description: Patient visits
+  - name: appointments
+    description: Appointment scheduling
+  - name: prescriptions
+    description: Prescription photos
+  - name: reminders
+    description: Medicine reminders
+  - name: Storage
+    description: Object storage upload and serving endpoints.
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +37,341 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /me:
+    get:
+      operationId: getMe
+      tags: [doctor]
+      summary: Get current doctor profile
+      responses:
+        "200":
+          description: Doctor profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Doctor"
+    put:
+      operationId: updateMe
+      tags: [doctor]
+      summary: Update doctor profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DoctorUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Doctor"
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [doctor]
+      summary: Dashboard summary with today's stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /patients:
+    get:
+      operationId: listPatients
+      tags: [patients]
+      summary: List/search patients
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by name or phone
+      responses:
+        "200":
+          description: Patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PatientWithStats"
+    post:
+      operationId: createPatient
+      tags: [patients]
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPatient"
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+
+  /patients/{patientId}:
+    get:
+      operationId: getPatient
+      tags: [patients]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Patient detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientDetail"
+
+  /patients/{patientId}/appointments:
+    get:
+      operationId: listPatientAppointments
+      tags: [appointments]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+    post:
+      operationId: createAppointment
+      tags: [appointments]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAppointment"
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+
+  /appointments/{appointmentId}:
+    delete:
+      operationId: cancelAppointment
+      tags: [appointments]
+      parameters:
+        - name: appointmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /patients/{patientId}/prescriptions:
+    get:
+      operationId: listPatientPrescriptions
+      tags: [prescriptions]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Prescriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Prescription"
+    post:
+      operationId: createPrescription
+      tags: [prescriptions]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPrescription"
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+
+  /patients/{patientId}/reminders:
+    get:
+      operationId: listPatientReminders
+      tags: [reminders]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Reminders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MedicineReminder"
+    post:
+      operationId: createReminder
+      tags: [reminders]
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewReminder"
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicineReminder"
+
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+      responses:
+        '200':
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadUrlResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /storage/public-objects/{filePath}:
+    get:
+      tags: [Storage]
+      operationId: getPublicObject
+      parameters:
+        - name: filePath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getStorageObject
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
 components:
   schemas:
     HealthStatus:
@@ -33,4 +381,237 @@ components:
           type: string
       required:
         - status
-
+    SuccessResponse:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+    Doctor:
+      type: object
+      required: [id, name, clinicName, phone, address, email]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        clinicName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+    DoctorUpdate:
+      type: object
+      required: [name, clinicName, phone, address]
+      properties:
+        name:
+          type: string
+        clinicName:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+    Patient:
+      type: object
+      required: [id, name, phone, age, gender, createdAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        age:
+          type: integer
+        gender:
+          type: string
+          enum: [Male, Female, Other]
+        createdAt:
+          type: string
+          format: date-time
+    PatientWithStats:
+      allOf:
+        - $ref: "#/components/schemas/Patient"
+        - type: object
+          required: [totalVisits, lastVisitDate, hasActiveReminder]
+          properties:
+            totalVisits:
+              type: integer
+            lastVisitDate:
+              type: string
+              nullable: true
+            hasActiveReminder:
+              type: boolean
+    NewPatient:
+      type: object
+      required: [name, phone, age, gender]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 10
+          maxLength: 10
+        age:
+          type: integer
+          minimum: 0
+          maximum: 130
+        gender:
+          type: string
+          enum: [Male, Female, Other]
+    PatientDetail:
+      type: object
+      required: [patient, totalVisits, lastVisitDate, nextAppointment, activeReminder]
+      properties:
+        patient:
+          $ref: "#/components/schemas/Patient"
+        totalVisits:
+          type: integer
+        lastVisitDate:
+          type: string
+          nullable: true
+        nextAppointment:
+          allOf:
+            - $ref: "#/components/schemas/Appointment"
+          nullable: true
+        activeReminder:
+          allOf:
+            - $ref: "#/components/schemas/MedicineReminder"
+          nullable: true
+    Appointment:
+      type: object
+      required: [id, patientId, appointmentDate, createdAt]
+      properties:
+        id:
+          type: string
+        patientId:
+          type: string
+        appointmentDate:
+          type: string
+          description: ISO date (YYYY-MM-DD)
+        createdAt:
+          type: string
+          format: date-time
+    NewAppointment:
+      type: object
+      required: [appointmentDate]
+      properties:
+        appointmentDate:
+          type: string
+          description: ISO date (YYYY-MM-DD)
+    Prescription:
+      type: object
+      required: [id, patientId, photoUrl, createdAt]
+      properties:
+        id:
+          type: string
+        patientId:
+          type: string
+        photoUrl:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    NewPrescription:
+      type: object
+      required: [photoUrl]
+      properties:
+        photoUrl:
+          type: string
+    MedicineReminder:
+      type: object
+      required: [id, patientId, startDate, endDate, durationDays, isActive, createdAt]
+      properties:
+        id:
+          type: string
+        patientId:
+          type: string
+        startDate:
+          type: string
+          description: ISO date (YYYY-MM-DD)
+        endDate:
+          type: string
+          description: ISO date (YYYY-MM-DD)
+        durationDays:
+          type: integer
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    NewReminder:
+      type: object
+      required: [durationDays, isActive]
+      properties:
+        durationDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+        isActive:
+          type: boolean
+    DashboardSummary:
+      type: object
+      required: [todayPatients, todayAppointments, activeReminders, patientsThisMonth, todayPatientList]
+      properties:
+        todayPatients:
+          type: integer
+        todayAppointments:
+          type: integer
+        activeReminders:
+          type: integer
+        patientsThisMonth:
+          type: integer
+        todayPatientList:
+          type: array
+          items:
+            $ref: "#/components/schemas/TodayPatientRow"
+    TodayPatientRow:
+      type: object
+      required: [patientId, name, visitTime, hasActiveReminder]
+      properties:
+        patientId:
+          type: string
+        name:
+          type: string
+        visitTime:
+          type: string
+        nextAppointmentDate:
+          type: string
+          nullable: true
+        hasActiveReminder:
+          type: boolean
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        size:
+          type: integer
+          minimum: 1
+        contentType:
+          type: string
+          minLength: 1
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/UploadUrlRequest'
