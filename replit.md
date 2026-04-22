@@ -25,3 +25,8 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## WhatsApp / Twilio reminders
+- User declined the built-in Twilio integration. To enable real WhatsApp sending, set these secrets manually: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM (e.g. `whatsapp:+14155238886` for sandbox).
+- Without these, `lib/whatsapp.ts` runs in dry-run mode and logs the would-be message; the scheduler still ticks every 5 minutes from 9 AM IST.
+- Manual trigger: POST /admin/run-reminders-now (auth required).
