@@ -24,6 +24,14 @@ function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+function plannedMessageCount(duration: number): number {
+  if (duration < 3) return 0;
+  if (duration <= 4) return 1;
+  if (duration <= 10) return 2;
+  if (duration <= 20) return 4;
+  return 7;
+}
+
 function fmtDate(s: string): string {
   return new Date(s + "T00:00:00").toLocaleDateString("en-IN", {
     weekday: "short",
@@ -476,10 +484,26 @@ export default function PatientDetail() {
             </div>
           </div>
 
+          <div className="rounded-xl bg-primary/5 border border-primary/20 px-4 py-3 text-xs space-y-1.5">
+            <div className="font-semibold text-foreground text-sm">How many WhatsApps will go out?</div>
+            <div className="text-muted-foreground leading-relaxed">
+              Based on the course length, MediSync sends:
+            </div>
+            <ul className="text-muted-foreground space-y-0.5 pl-4 list-disc">
+              <li><b>2–4 days</b> → 1 message in the middle</li>
+              <li><b>5–10 days</b> → 2 messages</li>
+              <li><b>11–20 days</b> → 4 messages</li>
+              <li><b>21+ days</b> → 7 messages</li>
+            </ul>
+            <div className="text-muted-foreground pt-1">
+              For this {duration}-day course: <b className="text-foreground">{plannedMessageCount(duration)} message{plannedMessageCount(duration) === 1 ? "" : "s"}</b>, never on day 1 or the last day.
+            </div>
+          </div>
+
           <label className="flex items-center justify-between gap-4 rounded-xl bg-muted/40 border border-border px-4 py-3 cursor-pointer">
             <div>
-              <div className="font-semibold text-sm">Send daily reminder</div>
-              <div className="text-xs text-muted-foreground">Patient will be reminded each day.</div>
+              <div className="font-semibold text-sm">Send WhatsApp reminders</div>
+              <div className="text-xs text-muted-foreground">Auto-spaced across the course at 9 AM IST.</div>
             </div>
             <input
               type="checkbox"
