@@ -71,7 +71,7 @@ async function sendAppointmentReminders(): Promise<void> {
     const body =
       `Hello ${row.patient.name}, this is a reminder of your appointment with Dr. ${docName}${clinicPart} ` +
       `tomorrow (${fmtDateLong(target)})${timePart}. ` +
-      `Please reply if you cannot make it. — ClinicSaathi`;
+      `Please reply if you cannot make it. — MediSync`;
 
     const result = await sendWhatsApp({ toPhone: row.patient.phone, body });
     if (result.ok) {
@@ -127,7 +127,7 @@ async function sendMedicineReminders(): Promise<void> {
         ? "Today is the last day of your course."
         : `Course ends in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
     const body =
-      `Hi ${row.patient.name}, this is your daily medicine reminder from Dr. ${docName}. ${tail} — ClinicSaathi`;
+      `Hi ${row.patient.name}, this is your daily medicine reminder from Dr. ${docName}. ${tail} — MediSync`;
 
     const result = await sendWhatsApp({ toPhone: row.patient.phone, body });
     if (result.ok) {

@@ -196,7 +196,7 @@ function ClerkProviderWithRoutes() {
         signIn: {
           start: {
             title: "Welcome back",
-            subtitle: "Sign in to continue to ClinicSaathi",
+            subtitle: "Sign in to continue to MediSync",
           },
         },
         signUp: {

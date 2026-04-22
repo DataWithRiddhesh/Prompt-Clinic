@@ -177,7 +177,7 @@ export default function Landing() {
       <footer className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 flex items-center justify-between text-xs text-muted-foreground">
           <Wordmark />
-          <div>© {new Date().getFullYear()} ClinicSaathi</div>
+          <div>© {new Date().getFullYear()} MediSync</div>
         </div>
       </footer>
     </div>
