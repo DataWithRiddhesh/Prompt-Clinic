@@ -39,8 +39,8 @@ export default function Landing() {
               Built for the everyday Indian clinic
             </span>
             <h1 className="mt-5 text-[44px] sm:text-6xl font-extrabold leading-[1.05] tracking-tight">
-              The calm companion for{" "}
-              <span className="text-primary">your busy clinic</span>.
+              Reminders That{" "}
+              <span className="text-primary">Actually Reach Patients</span>.
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-xl leading-relaxed">
               Keep patient records, fix the next visit, save prescription photos
