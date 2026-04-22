@@ -21,7 +21,6 @@ function serialize(r: typeof medicineRemindersTable.$inferSelect) {
   return {
     id: r.id,
     patientId: r.patientId,
-    medicineName: r.medicineName,
     startDate: r.startDate,
     endDate: r.endDate,
     durationDays: r.durationDays,
@@ -81,7 +80,6 @@ router.post("/patients/:patientId/reminders", requireDoctor, async (req, res) =>
       id,
       patientId,
       doctorId,
-      medicineName: parsed.data.medicineName.trim(),
       startDate: startIso,
       endDate: endIso,
       durationDays: parsed.data.durationDays,

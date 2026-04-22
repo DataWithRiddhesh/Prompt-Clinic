@@ -539,13 +539,11 @@ components:
           type: string
     MedicineReminder:
       type: object
-      required: [id, patientId, medicineName, startDate, endDate, durationDays, isActive, createdAt]
+      required: [id, patientId, startDate, endDate, durationDays, isActive, createdAt]
       properties:
         id:
           type: string
         patientId:
-          type: string
-        medicineName:
           type: string
         startDate:
           type: string
@@ -562,11 +560,8 @@ components:
           format: date-time
     NewReminder:
       type: object
-      required: [medicineName, durationDays, isActive]
+      required: [durationDays, isActive]
       properties:
-        medicineName:
-          type: string
-          minLength: 1
         durationDays:
           type: integer
           minimum: 1

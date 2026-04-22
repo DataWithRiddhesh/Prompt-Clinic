@@ -63,14 +63,12 @@ export default function PatientDetail() {
   // Reminder state
   const [duration, setDuration] = useState(7);
   const [reminderEnabled, setReminderEnabled] = useState(true);
-  const [medicineName, setMedicineName] = useState("");
   const [aptTime, setAptTime] = useState("");
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const activeReminder = detail?.activeReminder;
   useEffect(() => {
-    if (activeReminder?.medicineName && !medicineName) {
-      setMedicineName(activeReminder.medicineName);
+    if (activeReminder) {
       setDuration(activeReminder.durationDays);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,19 +126,10 @@ export default function PatientDetail() {
   }
 
   function saveReminder() {
-    if (!medicineName.trim()) {
-      toast({
-        title: "Medicine name needed",
-        description: "Tell the patient what to take.",
-        variant: "destructive",
-      });
-      return;
-    }
     createReminder.mutate(
       {
         patientId,
         data: {
-          medicineName: medicineName.trim(),
           durationDays: duration,
           isActive: reminderEnabled,
         },
@@ -450,11 +439,7 @@ export default function PatientDetail() {
           {activeReminder && (
             <div className="rounded-xl bg-chart-3/10 border border-chart-3/30 px-4 py-3 text-sm">
               <div className="flex items-center gap-2 font-semibold text-chart-3">
-                <Pill className="h-4 w-4" />
-                {activeReminder.medicineName || "Medicine course"}
-              </div>
-              <div className="flex items-center gap-2 text-chart-3 text-xs mt-1">
-                <Clock className="h-3 w-3" />
+                <Clock className="h-4 w-4" />
                 {fmtDate(activeReminder.startDate)} → {fmtDate(activeReminder.endDate)}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
@@ -462,16 +447,6 @@ export default function PatientDetail() {
               </div>
             </div>
           )}
-
-          <div>
-            <label className="block text-sm font-semibold mb-1.5">Medicine name</label>
-            <input
-              value={medicineName}
-              onChange={(e) => setMedicineName(e.target.value)}
-              placeholder="e.g. Azithromycin 500mg, after food"
-              className="w-full h-12 rounded-lg border border-input bg-background px-3.5 text-base outline-none focus:ring-2 focus:ring-ring focus:border-ring"
-            />
-          </div>
 
           <div>
             <label className="block text-sm font-semibold mb-1.5">Course duration (days)</label>

@@ -94,7 +94,6 @@ export interface Appointment {
 export interface MedicineReminder {
   id: string;
   patientId: string;
-  medicineName: string;
   /** ISO date (YYYY-MM-DD) */
   startDate: string;
   /** ISO date (YYYY-MM-DD) */
@@ -131,8 +130,6 @@ export interface NewPrescription {
 }
 
 export interface NewReminder {
-  /** @minLength 1 */
-  medicineName: string;
   /**
    * @minimum 1
    * @maximum 365

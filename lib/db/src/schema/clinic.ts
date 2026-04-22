@@ -122,7 +122,6 @@ export const medicineRemindersTable = pgTable(
     doctorId: text("doctor_id")
       .notNull()
       .references(() => doctorsTable.id, { onDelete: "cascade" }),
-    medicineName: text("medicine_name").notNull().default(""),
     startDate: date("start_date").notNull(),
     endDate: date("end_date").notNull(),
     durationDays: integer("duration_days").notNull(),

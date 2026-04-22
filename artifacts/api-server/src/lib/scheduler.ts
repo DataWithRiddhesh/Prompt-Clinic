@@ -121,14 +121,13 @@ async function sendMedicineReminders(): Promise<void> {
       0,
       Math.round((end.getTime() - now.getTime()) / 86_400_000),
     );
-    const medicine = row.reminder.medicineName?.trim() || "your medicine";
     const docName = row.doctor.name?.trim() || "your doctor";
     const tail =
       daysLeft === 0
         ? "Today is the last day of your course."
         : `Course ends in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`;
     const body =
-      `Hi ${row.patient.name}, time to take ${medicine} as advised by Dr. ${docName}. ${tail} — ClinicSaathi`;
+      `Hi ${row.patient.name}, this is your daily medicine reminder from Dr. ${docName}. ${tail} — ClinicSaathi`;
 
     const result = await sendWhatsApp({ toPhone: row.patient.phone, body });
     if (result.ok) {

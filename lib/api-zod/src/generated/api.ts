@@ -149,7 +149,6 @@ export const GetPatientResponse = zod.object({
     .object({
       id: zod.string(),
       patientId: zod.string(),
-      medicineName: zod.string(),
       startDate: zod.string().describe("ISO date (YYYY-MM-DD)"),
       endDate: zod.string().describe("ISO date (YYYY-MM-DD)"),
       durationDays: zod.number(),
@@ -235,7 +234,6 @@ export const ListPatientRemindersParams = zod.object({
 export const ListPatientRemindersResponseItem = zod.object({
   id: zod.string(),
   patientId: zod.string(),
-  medicineName: zod.string(),
   startDate: zod.string().describe("ISO date (YYYY-MM-DD)"),
   endDate: zod.string().describe("ISO date (YYYY-MM-DD)"),
   durationDays: zod.number(),
@@ -253,7 +251,6 @@ export const CreateReminderParams = zod.object({
 export const createReminderBodyDurationDaysMax = 365;
 
 export const CreateReminderBody = zod.object({
-  medicineName: zod.string().min(1),
   durationDays: zod.number().min(1).max(createReminderBodyDurationDaysMax),
   isActive: zod.boolean(),
 });
@@ -261,7 +258,6 @@ export const CreateReminderBody = zod.object({
 export const CreateReminderResponse = zod.object({
   id: zod.string(),
   patientId: zod.string(),
-  medicineName: zod.string(),
   startDate: zod.string().describe("ISO date (YYYY-MM-DD)"),
   endDate: zod.string().describe("ISO date (YYYY-MM-DD)"),
   durationDays: zod.number(),

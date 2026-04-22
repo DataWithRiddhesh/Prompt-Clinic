@@ -7,8 +7,6 @@
  */
 
 export interface NewReminder {
-  /** @minLength 1 */
-  medicineName: string;
   /**
    * @minimum 1
    * @maximum 365

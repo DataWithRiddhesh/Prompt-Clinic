@@ -9,7 +9,6 @@
 export interface MedicineReminder {
   id: string;
   patientId: string;
-  medicineName: string;
   /** ISO date (YYYY-MM-DD) */
   startDate: string;
   /** ISO date (YYYY-MM-DD) */
