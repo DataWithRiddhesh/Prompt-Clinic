@@ -43,9 +43,9 @@ export default function Landing() {
               <span className="text-primary">Actually Reach Patients</span>.
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Keep patient records, fix the next visit, save prescription photos
-              and track medicine courses — all in a few taps between
-              consultations. No clutter, no hospital-sized software.
+              Patients forget appointments? Forgot to take medicine? We send
+              automatic WhatsApp reminders. Plus patient records,
+              prescriptions, and calendar.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <SignUpButton mode="modal">
