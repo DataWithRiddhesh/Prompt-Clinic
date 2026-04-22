@@ -59,6 +59,7 @@ export const GetDashboardResponse = zod.object({
       name: zod.string(),
       visitTime: zod.string(),
       nextAppointmentDate: zod.string().nullish(),
+      nextAppointmentTime: zod.string().nullish(),
       hasActiveReminder: zod.boolean(),
     }),
   ),

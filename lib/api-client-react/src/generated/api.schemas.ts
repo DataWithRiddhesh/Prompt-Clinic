@@ -143,6 +143,7 @@ export interface TodayPatientRow {
   name: string;
   visitTime: string;
   nextAppointmentDate?: string | null;
+  nextAppointmentTime?: string | null;
   hasActiveReminder: boolean;
 }
 

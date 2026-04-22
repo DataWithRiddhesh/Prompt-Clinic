@@ -80,9 +80,11 @@ router.get("/dashboard", requireDoctor, async (req, res) => {
         )
         .orderBy(asc(appointmentsTable.appointmentDate))
     : [];
-  const aptByPat = new Map<string, string>();
+  const aptByPat = new Map<string, { date: string; time: string | null }>();
   for (const a of upcomingApts) {
-    if (!aptByPat.has(a.patientId)) aptByPat.set(a.patientId, a.appointmentDate);
+    if (!aptByPat.has(a.patientId)) {
+      aptByPat.set(a.patientId, { date: a.appointmentDate, time: a.appointmentTime });
+    }
   }
 
   const activeRems = patientIds.length
@@ -104,7 +106,8 @@ router.get("/dashboard", requireDoctor, async (req, res) => {
     patientId: v.patientId,
     name: v.name,
     visitTime: v.visitDate.toISOString(),
-    nextAppointmentDate: aptByPat.get(v.patientId) ?? null,
+    nextAppointmentDate: aptByPat.get(v.patientId)?.date ?? null,
+    nextAppointmentTime: aptByPat.get(v.patientId)?.time ?? null,
     hasActiveReminder: remSet.has(v.patientId),
   }));
 

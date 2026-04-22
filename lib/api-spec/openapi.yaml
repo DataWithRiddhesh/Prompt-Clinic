@@ -597,6 +597,9 @@ components:
         nextAppointmentDate:
           type: string
           nullable: true
+        nextAppointmentTime:
+          type: string
+          nullable: true
         hasActiveReminder:
           type: boolean
     UploadUrlRequest:

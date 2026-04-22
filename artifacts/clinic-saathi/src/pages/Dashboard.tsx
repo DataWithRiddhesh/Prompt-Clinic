@@ -142,6 +142,7 @@ export default function Dashboard() {
                                 <span>•</span>
                                 <span className="text-primary font-medium">
                                   Next: {new Date(p.nextAppointmentDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                                  {p.nextAppointmentTime ? ` · ${p.nextAppointmentTime}` : ""}
                                 </span>
                               </>
                             )}
