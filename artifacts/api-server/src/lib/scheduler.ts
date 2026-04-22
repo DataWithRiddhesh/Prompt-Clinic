@@ -83,6 +83,36 @@ async function sendAppointmentReminders(): Promise<void> {
   }
 }
 
+// Returns the day-numbers (1-indexed within the course) on which a WhatsApp
+// reminder should be sent, never including day 1 or the last day.
+//   2-4 days   -> 1 message
+//   5-10 days  -> 2 messages
+//   11-20 days -> 4 messages
+//   21+ days   -> 7 messages
+export function computeReminderDays(duration: number): number[] {
+  if (duration < 3) return [];
+  let count: number;
+  if (duration <= 4) count = 1;
+  else if (duration <= 10) count = 2;
+  else if (duration <= 20) count = 4;
+  else count = 7;
+
+  const days = new Set<number>();
+  for (let i = 1; i <= count; i++) {
+    let day = Math.round((i * duration) / (count + 1));
+    if (day < 2) day = 2;
+    if (day > duration - 1) day = duration - 1;
+    days.add(day);
+  }
+  return Array.from(days).sort((a, b) => a - b);
+}
+
+function dayOfCourse(startDate: string, today: string): number {
+  const s = new Date(startDate + "T00:00:00Z").getTime();
+  const t = new Date(today + "T00:00:00Z").getTime();
+  return Math.round((t - s) / 86_400_000) + 1; // day 1 = startDate
+}
+
 async function sendMedicineReminders(): Promise<void> {
   const { date: today } = nowInIst();
   const rows = await db
@@ -106,10 +136,14 @@ async function sendMedicineReminders(): Promise<void> {
       ),
     );
 
-  // Filter out ones already sent today (lte includes today)
-  const due = rows.filter(
-    (r) => r.reminder.lastReminderSentDate !== today,
-  );
+  // Filter out ones already sent today and ones whose schedule says
+  // "do not send today".
+  const due = rows.filter((r) => {
+    if (r.reminder.lastReminderSentDate === today) return false;
+    const day = dayOfCourse(r.reminder.startDate, today);
+    const scheduled = computeReminderDays(r.reminder.durationDays);
+    return scheduled.includes(day);
+  });
 
   if (due.length === 0) return;
   logger.info({ count: due.length, today }, "[scheduler] sending medicine reminders");
