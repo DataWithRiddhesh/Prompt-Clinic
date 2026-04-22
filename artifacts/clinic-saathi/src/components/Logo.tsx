@@ -35,7 +35,7 @@ export function Wordmark({ className }: { className?: string }) {
         className="font-bold text-[19px] tracking-tight"
         style={{ fontFamily: "var(--app-font-display)" }}
       >
-        Clinic<span className="text-primary">Saathi</span>
+        Medi<span className="text-primary">Sync</span>
       </span>
     </div>
   );
