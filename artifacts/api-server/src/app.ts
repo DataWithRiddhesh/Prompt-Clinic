@@ -1,42 +1,41 @@
-import express, { type Express } from "express";
-import cors from "cors";
-import pinoHttp, { type HttpLogger } from "pino-http";
-import { type IncomingMessage, type ServerResponse } from "http";
-import { clerkMiddleware } from "@clerk/express";
-import { CLERK_PROXY_PATH, clerkProxyMiddleware } from "./middlewares/clerkProxyMiddleware";
-import router from "./routes";
-import { logger } from "./lib/logger";
+import express from 'express'
+import { Request, Response } from 'express'
 
-const app: Express = express();
+const app = express()
+const PORT = process.env.PORT || 3000
 
-app.use(
-  pinoHttp({
-    logger,
-    serializers: {
-      req(req: IncomingMessage) {
-        return {
-          id: (req as any).id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res: ServerResponse) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
-    },
-  }),
-);
+app.use(express.json())
 
-app.use(CLERK_PROXY_PATH, clerkProxyMiddleware());
+app.get('/', (req: Request, res: Response) => {
+  res.json({ message: 'MediSync API running' })
+})
 
-app.use(cors({ credentials: true, origin: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.get('/api/patients', (req: Request, res: Response) => {
+  res.json({ patients: [] })
+})
 
-app.use(clerkMiddleware());
+app.post('/api/patients', (req: Request, res: Response) => {
+  res.json({ success: true })
+})
 
-app.use("/api", router);
+app.get('/api/appointments', (req: Request, res: Response) => {
+  res.json({ appointments: [] })
+})
 
-export default app;
+app.post('/api/appointments', (req: Request, res: Response) => {
+  res.json({ success: true })
+})
+
+app.get('/api/reminders', (req: Request, res: Response) => {
+  res.json({ reminders: [] })
+})
+
+app.post('/api/reminders', (req: Request, res: Response) => {
+  res.json({ success: true })
+})
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
+
+export default app
