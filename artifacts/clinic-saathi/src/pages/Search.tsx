@@ -55,7 +55,7 @@ export default function SearchPage() {
         ) : (
           <ul className="divide-y divide-border">
             {patients?.map((p) => {
-              const initials = p.name.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
+              const initials = (p.name ?? "").split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
               return (
                 <li key={p.id}>
                   <Link href={`/patients/${p.id}`}>

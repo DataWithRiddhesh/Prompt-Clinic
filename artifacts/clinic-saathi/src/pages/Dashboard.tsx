@@ -124,7 +124,7 @@ export default function Dashboard() {
                 hour: "numeric",
                 minute: "2-digit",
               });
-              const initials = p.name.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
+              const initials = (p.name ?? "").split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
               return (
                 <li key={p.patientId}>
                   <Link href={`/patients/${p.patientId}`}>

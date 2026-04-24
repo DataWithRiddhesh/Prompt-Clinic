@@ -105,7 +105,7 @@ export default function Landing() {
                     <div key={p.n} className="flex items-center justify-between rounded-lg border border-card-border px-3 py-2.5">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-secondary text-secondary-foreground grid place-items-center text-xs font-bold">
-                          {p.n.split(" ").map((s) => s[0]).join("")}
+                          {(p.n ?? "").split(" ").map((s) => s[0]).join("")}
                         </div>
                         <div>
                           <div className="text-sm font-semibold">{p.n}</div>

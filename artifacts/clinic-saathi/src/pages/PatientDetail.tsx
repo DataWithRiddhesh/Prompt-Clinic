@@ -160,7 +160,7 @@ export default function PatientDetail() {
   }
 
   const p = detail.patient;
-  const initials = p.name.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
+  const initials = (p.name ?? "").split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
   const lastVisit = detail.lastVisitDate
     ? new Date(detail.lastVisitDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
     : "—";
@@ -172,7 +172,7 @@ export default function PatientDetail() {
   const cells: (number | null)[] = [];
   for (let i = 0; i < startWeekday; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-  while (cells.length % 7 !== 0) cells.push(null);
+  while ((cells ?? []).length % 7 !== 0) cells?.push(null);
 
   const todayKey = isoDate(new Date());
   const aptKey = detail.nextAppointment?.appointmentDate;
@@ -289,7 +289,7 @@ export default function PatientDetail() {
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1">
-            {cells.map((day, i) => {
+            {(cells ?? []).map((day, i) => {
               if (day === null) return <div key={i} />;
               const dayDate = new Date(calMonth.getFullYear(), calMonth.getMonth(), day);
               const key = isoDate(dayDate);
