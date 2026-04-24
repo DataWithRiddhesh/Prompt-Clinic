@@ -382,7 +382,7 @@ export default function PatientDetail() {
         </div>
 
         <div className="p-4">
-          {!prescriptions || prescriptions.length === 0 ? (
+          {!prescriptions?.length ? (
             <div className="px-2 py-10 text-center">
               <div className="mx-auto h-14 w-14 rounded-2xl bg-secondary text-secondary-foreground grid place-items-center mb-3">
                 <Camera className="h-6 w-6" />
@@ -394,7 +394,7 @@ export default function PatientDetail() {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {prescriptions.map((rx) => {
+              {prescriptions?.map((rx) => {
                 const url = objectImageUrl(rx.photoUrl);
                 return (
                   <button
@@ -428,7 +428,7 @@ export default function PatientDetail() {
           </div>
           {activeReminder ? (
             <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-chart-3/15 text-chart-3">Active</span>
-          ) : reminders && reminders.length > 0 ? (
+          ) : reminders?.length ? (
             <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-muted text-muted-foreground">Completed</span>
           ) : (
             <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-muted text-muted-foreground">Not set</span>

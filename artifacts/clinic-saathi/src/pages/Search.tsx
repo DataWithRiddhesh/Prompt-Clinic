@@ -33,7 +33,7 @@ export default function SearchPage() {
           <div className="p-8 grid place-items-center text-muted-foreground">
             <Loader2 className="h-5 w-5 animate-spin" />
           </div>
-        ) : !patients || patients.length === 0 ? (
+        ) : !patients?.length ? (
           <div className="p-10 text-center">
             <div className="mx-auto h-14 w-14 rounded-2xl bg-secondary text-secondary-foreground grid place-items-center mb-3">
               <SearchIcon className="h-6 w-6" />
@@ -54,7 +54,7 @@ export default function SearchPage() {
           </div>
         ) : (
           <ul className="divide-y divide-border">
-            {patients.map((p) => {
+            {patients?.map((p) => {
               const initials = p.name.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
               return (
                 <li key={p.id}>

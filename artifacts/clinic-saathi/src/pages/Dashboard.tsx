@@ -102,7 +102,7 @@ export default function Dashboard() {
 
         {isLoading ? (
           <div className="p-8 text-center text-sm text-muted-foreground">Loading…</div>
-        ) : !dashboard || dashboard.todayPatientList.length === 0 ? (
+        ) : !dashboard?.todayPatientList?.length ? (
           <div className="px-6 py-12 text-center">
             <div className="mx-auto h-14 w-14 rounded-2xl bg-secondary text-secondary-foreground grid place-items-center mb-3">
               <Users className="h-6 w-6" />
@@ -119,7 +119,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <ul className="divide-y divide-border">
-            {dashboard.todayPatientList.map((p) => {
+            {dashboard?.todayPatientList?.map((p) => {
               const time = new Date(p.visitTime).toLocaleTimeString("en-IN", {
                 hour: "numeric",
                 minute: "2-digit",
